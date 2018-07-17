@@ -19,5 +19,10 @@
   "bugs": {
     "url": "https://github.com/austenwillis/itc230/issues"
   },
-  "homepage": "https://github.com/austenwillis/itc230#readme"
+  "homepage": "https://github.com/austenwillis/itc230#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0"
+  }
 }

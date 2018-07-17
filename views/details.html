@@ -1,0 +1,17 @@
+<html>
+    <body>
+        <a href="/">Home</a>
+{{#if found}}
+    <h2>{{title}} details</h2>
+    <li>Title: {{found.title}}</li>
+    <li>Director: {{found.director}}</li>
+    <li>Price: ${{found.price}}</li>
+    <p>
+    <a href="/delete?title={{found.title}}">Delete</a>
+    </p>
+{{else}}
+        <h2>{{title}} not found</h2>
+{{/if}}
+
+    </body>
+</html>
