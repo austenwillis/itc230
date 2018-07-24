@@ -6,6 +6,10 @@
     <input type="text" name="title" placeholder="title" >
     <button>Search</button>
 </form>
-
+<hr>
+<h3>Movie</h3>
+{{#each movies}}
+     <li><a href="/get/?title={{title}}">{{title}}</a></li>
+{{/each}}
 </body>
-</htlm>
+</html>

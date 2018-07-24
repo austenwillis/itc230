@@ -1,0 +1,28 @@
+{
+    "_id": {
+        "$oid": "5b564febfb6fc05e592f913c"
+    },
+    "title": "Star Wars",
+    "director": "George Lucas",
+    "price": 20
+}
+
+{
+    "_id": {
+        "$oid": "5b56501ffb6fc05e592f91fa"
+    },
+    "title": "Citizen Kane",
+    "director": "Orson Welles",
+    "price": 19
+}
+
+{
+    "_id": {
+        "$oid": "5b565060fb6fc05e592f922f"
+    },
+    "title": "The Dark Knight",
+    "director": "Christopher Nolan",
+    "price": 18
+}
+
+
