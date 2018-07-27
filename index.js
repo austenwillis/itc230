@@ -59,6 +59,52 @@ app.post('/get', (req,res) => {
         res.render('details', {found: movies} ); 
     });
 });
+//api
+
+app.get('/api/v1/movie/:title', (req, res, next) => {
+    let title = req.params.title;
+    console.log(title);
+    Movie.findOne({title: title}, (err, found) => {
+        if (err || !found) return next(err);
+        res.json( found );    
+    });
+});
+
+app.get('/api/v1/movies', (req,res, next) => {
+    Movie.find((err,results) => {
+        if (err || !results) return next(err);
+        res.json(results);
+    });
+});
+
+app.get('/api/v1/movie/delete/:title', (req,res, next) => {
+   
+    Movie.remove({"title":req.params.title }, (err, result) => {
+        if (err){
+            console.log (err)
+            res.json({deleted: 0});
+}
+
+else{
+    console.log (result)
+   res.json({deleted: result.n});
+}
+       
+        
+    });
+});
+
+app.get('/api/v1/add/:title/:director/:price', (req,res, next) => {
+    // find & update existing item, or add new 
+    let title = req.params.title;
+    Movie.update({ title: title}, {title:title, director: req.params.director, price: req.params.price }, {upsert: true }, (err, result) => {
+        if (err) return next(err);
+        // nModified = 0 for new item, = 1+ for updated item 
+        res.json({updated: result.nModified});
+    });
+});
+
+
 
 
 
