@@ -1,15 +1,164 @@
 <html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>React App Demo</title>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react-dom.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
+ 
+ <style type="text/css">
+  body {font-size :1em;
+   color:black;
+    font-family:helvetica;
+   }
+   h2{color: red;
+   text-align:center;
+   text-decoration:underline;
+   }
+   h3{color:black;
+   font-size:1em;
+   text-decoration:underline;
+   }
+  
+
+  .flex-container {
+      display: -webkit-flex;
+      display: flex;
+      width: 700px;
+      background-color: lightgrey;
+      border:black solid;
+      margin:0 auto;
+  }
+
+  #item-list {
+      background-color: grey;
+      width: 35%;
+      padding: 60px 10px 0px 0px;
+      border-right:black solid;
+      cursor: pointer;
+      
+  }
+      
+  #item-details {
+      background-color: lightgrey;
+      width: 75%;
+      padding: 35px;}
+     
+
+</style>
+</head>
 <body>
-<h2>Home</h2>
-<h3>Search For a Movie!</h3>
-<form method="POST" action="/get">
-    <input type="text" name="title" placeholder="title" >
-    <button>Search</button>
-</form>
-<hr>
-<h3>Movie</h3>
-{{#each movies}}
-     <li><a href="/get/?title={{title}}">{{title}}</a></li>
-{{/each}}
+
+  <div id="root"></div>
+
+<!-- NOTE: text/babel type required to support JSX -->
+<script type="text/babel">
+  
+    // define overal app component
+    class MovieApp extends React.Component{
+      constructor(props){
+        super(props); // be sure to first instantiate parent class
+        // Set initial state using data from server application
+        this.state = {
+          items: {{{movies}}},
+          filter: "", // search term 
+          curItem: {} // current selected item 
+        };
+
+        // bind App context to functions used by child components
+        
+        this.onChange = this.onChange.bind(this);
+        this.onClear = this.onClear.bind(this);
+
+      }
+
+    
+
+      // show item details when list item clicked
+      showDetails(event){
+        // event.target is item clicked. Assumes each item has an id attribute
+        let editItem = this.state.items.find((item) => {
+          return item._id == event.target.id;
+        });
+        this.setState({curItem: editItem});
+      }
+
+      // clear details form
+      onClear() {
+        this.setState({curItem: {}});
+      }
+
+      // handle detail changes
+      onChange(event) {
+        var newItem = this.state.curItem;
+        newItem[event.target.name] = event.target.value
+        this.setState({curItem: newItem});
+      }
+
+      
+      render() {
+        // render app elements
+        return (
+          <div>
+          <Title title="Movie Store" />
+         
+          <div className="flex-container">
+            <ItemList
+                items={this.state.items} 
+                filter={this.state.filter}
+                show={this.showDetails.bind(this)}
+            />
+            <ItemDetails item={this.state.curItem} change={this.onChange} save={this.onSave} reset={this.onClear} delete={this.onDelete} />
+            </div>
+          </div>
+          );
+      }
+    }
+    
+    // UI elements
+    const Title = ({title}) => {
+        return (
+           <div><h2>{title}</h2></div>
+        );
+    }
+
+    
+
+    const ItemList = ({items, filter, show}) => {
+      // return items that match search entry field, or all items if no entry
+      const itemNodes = items.map((item) => {
+        if (!filter || item.title.toLowerCase().includes(filter)) { 
+          return <li id={item._id} key={item._id} onClick={show}>{item.title}</li>
+        }
+      });
+      return <span id="item-list"><ul>{itemNodes}</ul></span>;
+    }
+    
+    const ItemDetails = (props) => {
+        return (
+          <span id="item-details">
+            <h2>Details:</h2>
+            <form onChange={props.change}>
+              <h3>Title</h3>
+              <input type="text" name="title" placeholder="title" value={props.item.title || ""} /><p/>
+              <h3>Director</h3>
+              <input type="text" name="director" placeholder="director" value={props.item.director || ""} /><p/>
+              <h3>Price</h3>
+              <input type="text" name="price" placeholder="price" value={props.item.price || ""}  />
+              <p/>
+            </form>
+             <button onClick={props.reset}>Reset</button>
+          </span>
+        );
+    }
+  
+    ReactDOM.render(<MovieApp />, document.getElementById('root'));
+
+  // convert date value to yyyy-mm-dd expected by HTML5 date field
+  
+  
+</script>
 </body>
 </html>

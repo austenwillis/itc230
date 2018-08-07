@@ -23,7 +23,7 @@ app.set("view engine", ".html");
 app.get('/', (req,res) => {
     Movie.find((err,movies) => {
         if (err) return next(err);
-        res.render('home', {movies: movies });    
+        res.render('home', {movies: JSON.stringify(movies)});    
     });
 });
 

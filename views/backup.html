@@ -1,0 +1,15 @@
+<html>
+<body>
+<h2>Home</h2>
+<h3>Search For a Movie!</h3>
+<form method="POST" action="/get">
+    <input type="text" name="title" placeholder="title" >
+    <button>Search</button>
+</form>
+<hr>
+<h3>Movie</h3>
+{{#each movies}}
+     <li><a href="/get/?title={{title}}">{{title}}</a></li>
+{{/each}}
+</body>
+</html>
