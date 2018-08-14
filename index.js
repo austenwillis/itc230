@@ -7,6 +7,7 @@ var Movie =require("./models/Movie");
 app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/views')); // set location for static files
 app.use(require("body-parser").urlencoded({extended: true})); // parse form submissions
+app.use('/api', require("cors")());
 
 let handlebars =  require("express-handlebars");
 app.engine(".html", handlebars({extname: '.html'}));
@@ -77,22 +78,33 @@ app.get('/api/v1/movies', (req,res, next) => {
     });
 });
 
-app.get('/api/v1/movie/delete/:title', (req,res, next) => {
-   
-    Movie.remove({"title":req.params.title }, (err, result) => {
-        if (err){
-            console.log (err)
-            res.json({deleted: 0});
-}
 
-else{
-    console.log (result)
-   res.json({deleted: result.n});
-}
-       
-        
+
+app.get('/api/v1/delete/:id', (req,res, next) => {
+    Movie.remove({"_id":req.params.id }, (err, found) => {
+        if (err) return next(err);
+        // return # of items deleted
+        res.json({"deleted": found.result});
     });
 });
+
+app.post('/api/v1/add/', (req,res, next) => {
+    // find & update existing item, or add new 
+    if (!req.body._id) { // insert new document
+        let movie = new Movie({title:req.body.title,director:req.body.director,price:req.body.price});
+        movie.save((err,newMovie) => {
+            if (err) return next(err);
+            console.log(newMovie)
+            res.json({updated: 0, _id: newMovie._id});
+        });
+    } else { // update existing document
+        Movie.updateOne({ _id: req.body._id}, {title:req.body.title, director: req.body.director, price: req.body.price }, (err, result) => {
+            if (err) return next(err);
+            res.json({updated: result.nModified, _id: req.body._id});
+        });
+    }
+});
+
 
 app.get('/api/v1/add/:title/:director/:price', (req,res, next) => {
     // find & update existing item, or add new 
@@ -103,6 +115,8 @@ app.get('/api/v1/add/:title/:director/:price', (req,res, next) => {
         res.json({updated: result.nModified});
     });
 });
+
+
 
 
 
